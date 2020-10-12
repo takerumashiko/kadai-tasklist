@@ -15,10 +15,10 @@ class TasksController extends Controller
      */
     public function index()
     {
-            $tasks=Task::all();
-            return view('tasks.index',[
-                'tasks'=>$tasks    
-            ]);
+        $tasks=Task::where('user_id',\Auth::id())->get();
+        return view('tasks.index',[
+           'tasks'=>$tasks, 
+        ]);
     }
 
     /**
@@ -46,12 +46,12 @@ class TasksController extends Controller
             'content'=>'required|max:255',
             'status'=>'required|max:10',
         ]);
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+            'user_id' => $request->user_id,
+        ]);
         
-        $task = new Task;
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
-
         return redirect('/');
     }
 
@@ -64,12 +64,11 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::findOrFail($id);
-
-        return view('tasks.show', [
+        
+        return view('tasks.show',[
             'task' => $task,
         ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -100,9 +99,11 @@ class TasksController extends Controller
         ]);
         $task = Task::findOrFail($id);
         
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+            'user_id' => $request->user_id,
+        ]);
 
         return redirect('/');
     }
@@ -116,8 +117,10 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
-        $task->delete();
-
+        if(\Auth::id() === $task->user_id){
+            $task->delete();
+    }
+    
         return redirect('/');
     }
 }
