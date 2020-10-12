@@ -78,7 +78,9 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Task::findOrFail($id);
-        
+        if(\Auth::id() === $task->user_id){
+            $task->update();
+        }
         return view('tasks.edit',[
             'task'=> $task,
         ]);
@@ -99,11 +101,9 @@ class TasksController extends Controller
         ]);
         $task = Task::findOrFail($id);
         
-        $request->user()->tasks()->create([
-            'content' => $request->content,
-            'status' => $request->status,
-            'user_id' => $request->user_id,
-        ]);
+        $task->content = $request->content;
+        $task->status = $request->status;
+        $task->save();
 
         return redirect('/');
     }
