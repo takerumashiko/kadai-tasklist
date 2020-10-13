@@ -15,10 +15,24 @@ class TasksController extends Controller
      */
     public function index()
     {
+        $data = [];
+        if (\Auth::check()) { 
+            $user = \Auth::user();
+            $tasks = $user->tasks()->get();
+
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+        }
+       
+        return view('tasks.index', $data);
+        /**
         $tasks=Task::where('user_id',\Auth::id())->get();
         return view('tasks.index',[
-           'tasks'=>$tasks, 
+            'tasks'=>$tasks,
         ]);
+        */
     }
 
     /**
@@ -49,7 +63,6 @@ class TasksController extends Controller
         $request->user()->tasks()->create([
             'content' => $request->content,
             'status' => $request->status,
-            'user_id' => $request->user_id,
         ]);
         
         return redirect('/');
@@ -64,10 +77,11 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::findOrFail($id);
-        
-        return view('tasks.show',[
-            'task' => $task,
-        ]);
+        if(\Auth::id() === $task->user_id){
+            return view('tasks.show',[
+                'task' => $task,
+            ]);
+        }
     }
     /**
      * Show the form for editing the specified resource.
@@ -79,11 +93,10 @@ class TasksController extends Controller
     {
         $task = Task::findOrFail($id);
         if(\Auth::id() === $task->user_id){
-            $task->update();
+            return view('tasks.edit',[
+                'task'=> $task,
+            ]);
         }
-        return view('tasks.edit',[
-            'task'=> $task,
-        ]);
     }
 
     /**
@@ -100,11 +113,11 @@ class TasksController extends Controller
             'status'=>'required|max:10',
         ]);
         $task = Task::findOrFail($id);
-        
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
-
+        if(\Auth::id() === $task->user_id){
+            $task->content = $request->content;
+            $task->status = $request->status;
+            $task->save();
+        }
         return redirect('/');
     }
 
