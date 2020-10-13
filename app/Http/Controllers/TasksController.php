@@ -25,8 +25,9 @@ class TasksController extends Controller
                 'tasks' => $tasks,
             ];
         }
-       
+     
         return view('tasks.index', $data);
+        
         /**
         $tasks=Task::where('user_id',\Auth::id())->get();
         return view('tasks.index',[
