@@ -67,6 +67,7 @@ class TasksController extends Controller
         ]);
         
         return redirect('/');
+        
     }
 
     /**
@@ -83,9 +84,9 @@ class TasksController extends Controller
                 'task' => $task,
             ]);
         }
-        else{
-            return redirect('/');
-        }
+        
+        return redirect('/');
+        
     }
     /**
      * Show the form for editing the specified resource.
@@ -101,6 +102,9 @@ class TasksController extends Controller
                 'task'=> $task,
             ]);
         }
+        
+        return redirect('/');
+        
     }
 
     /**
@@ -122,7 +126,9 @@ class TasksController extends Controller
             $task->status = $request->status;
             $task->save();
         }
-            return redirect('/');
+        
+        return redirect('/');
+        
     }
 
     /**
@@ -137,7 +143,9 @@ class TasksController extends Controller
         if(\Auth::id() === $task->user_id){
             $task->delete();
         }
-            return redirect('/');
+        
+        return redirect('/');
+        
     }
 }
 

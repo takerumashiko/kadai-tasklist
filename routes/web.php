@@ -13,7 +13,7 @@
 
 Route::get('/', 'TasksController@index');
     Route::group(['middleware'=>['auth']],function(){
-    Route::resource('tasks','TasksController',['only'=>['create','store','show','edit','update','destroy']]);
+    Route::resource('tasks','TasksController', ['except' => ['index']]);
 });
 
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
