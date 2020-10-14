@@ -101,7 +101,6 @@ class TasksController extends Controller
                 'task'=> $task,
             ]);
         }
-            return redirect('/');
     }
 
     /**
@@ -137,8 +136,8 @@ class TasksController extends Controller
         $task = Task::findOrFail($id);
         if(\Auth::id() === $task->user_id){
             $task->delete();
-    }
-        return redirect('/');
+        }
+            return redirect('/');
     }
 }
 
